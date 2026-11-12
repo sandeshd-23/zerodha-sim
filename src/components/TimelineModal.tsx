@@ -12,6 +12,7 @@ import {
   X,
 } from 'lucide-react';
 import { useSimulatorStore } from '../store/useSimulatorStore.ts';
+import { NumberInput } from './NumberInput.tsx';
 import { formatINR } from '../utils/format.ts';
 
 export const TimelineModal: React.FC = () => {
@@ -262,13 +263,13 @@ export const TimelineModal: React.FC = () => {
                   <label htmlFor="tl-new-cap" className="block font-medium text-gray-700 dark:text-gray-300 mb-1" data-coach="start-capital">
                     Starting Capital (₹)
                   </label>
-                  <input
+                  <NumberInput
                     id="tl-new-cap"
-                    type="number"
+                    integer
                     min={1000}
                     step={10000}
                     value={newCap}
-                    onChange={(e) => setNewCap(Number(e.target.value))}
+                    onChange={setNewCap}
                     className="w-full h-10 px-3 py-2 rounded border border-gray-300 dark:border-kite-darkBorder bg-white dark:bg-kite-darkBg font-mono"
                   />
                 </div>
@@ -503,13 +504,13 @@ export const TimelineModal: React.FC = () => {
                   </div>
                   <div>
                     <label htmlFor="tl-reset-cap" className="block text-[11px] font-medium mb-1" data-coach="start-capital">Reset Capital (₹)</label>
-                    <input
+                    <NumberInput
                       id="tl-reset-cap"
-                      type="number"
+                    integer
                       min={1000}
                       step={10000}
                       value={resetCap}
-                      onChange={(e) => setResetCap(Number(e.target.value))}
+                      onChange={setResetCap}
                       className="w-full h-10 md:h-auto px-2.5 py-1.5 rounded border border-gray-300 dark:border-kite-darkBorder bg-white dark:bg-kite-darkBg font-mono"
                     />
                   </div>

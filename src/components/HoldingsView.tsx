@@ -15,6 +15,7 @@ import {
   Unlock,
 } from 'lucide-react';
 import { useSimulatorStore } from '../store/useSimulatorStore.ts';
+import { NumberInput } from './NumberInput.tsx';
 import type { Holding } from '../types/simulator.ts';
 import { formatINR, formatNum, formatPct, getDisplaySymbol } from '../utils/format.ts';
 import { ActionSheet, Sheet, downloadCsv } from './OrderDetailsSheet.tsx';
@@ -579,10 +580,12 @@ const PledgeDialog: React.FC<{ r: Row; onClose: () => void; onSubmit: (newPledge
         <div>
           <label className="text-[11px] text-kite-muted">Quantity · max {max}</label>
           <div className="mt-1 flex items-center gap-2">
-            <input
-              inputMode="numeric"
+            <NumberInput
+              integer
+              min={0}
+              max={max}
               value={qty}
-              onChange={(e) => setQty(Math.min(max, Math.max(0, Math.floor(Number(e.target.value.replace(/\D/g, '')) || 0))))}
+              onChange={setQty}
               className="flex-1 h-10 text-center font-mono text-sm rounded border border-gray-300 dark:border-kite-darkBorder bg-gray-50 dark:bg-kite-darkBg focus:outline-none focus:border-purple-500"
             />
             <button onClick={() => setQty(max)} className="h-10 px-3 rounded border border-gray-300 dark:border-kite-darkBorder text-[11px] font-semibold text-purple-600">

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Bell, X } from 'lucide-react';
 import { useSimulatorStore } from '../store/useSimulatorStore.ts';
+import { NumberInput } from './NumberInput.tsx';
 import { formatNum, formatPct, getDisplayName, getDisplaySymbol } from '../utils/format.ts';
 import type { PriceAlert } from '../types/simulator.ts';
 
@@ -201,13 +202,13 @@ export const AlertModal: React.FC = () => {
                   </span>
                 )}
               </div>
-              <input
-                type="number"
-                inputMode="decimal"
-                step={property === 'LTP' ? '0.05' : '0.1'}
-                value={Number.isFinite(value) ? value : ''}
-                onChange={(e) => {
-                  setValue(e.target.value === '' ? NaN : Number(e.target.value));
+              <NumberInput
+                inputMode={property === 'LTP' ? 'decimal' : 'text'}
+                step={property === 'LTP' ? 0.05 : 0.1}
+                min={property === 'LTP' ? 0 : undefined}
+                value={Number.isFinite(value) ? value : 0}
+                onChange={(v) => {
+                  setValue(v);
                   setValueTouched(true);
                 }}
                 className={`${inputCls} font-mono`}

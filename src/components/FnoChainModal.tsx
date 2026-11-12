@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Activity, Layers, LineChart, Minus, Plus, ShoppingBasket, Trash2, X } from 'lucide-react';
 import { useSimulatorStore } from '../store/useSimulatorStore.ts';
+import { NumberInput } from './NumberInput.tsx';
 import { api } from '../api/client.ts';
 import type { BasketItem, FuturesContractQuote, OptionContractQuote, OrderBasket, OrderSide } from '../types/simulator.ts';
 import { priceDerivativeContractKey, type ExpiryInfo } from '../engine/optionsPricing.ts';
@@ -874,11 +875,12 @@ export const FnoChainModal: React.FC = () => {
                 <button onClick={() => setSheetLots((l) => Math.max(1, l - 1))} className="w-10 h-10 rounded border border-gray-200 dark:border-kite-darkBorder flex items-center justify-center" aria-label="Fewer lots">
                   <Minus className="w-4 h-4" />
                 </button>
-                <input
-                  type="number"
+                <NumberInput
+                  integer
                   min={1}
                   value={sheetLots}
-                  onChange={(e) => setSheetLots(Math.max(1, Math.floor(Number(e.target.value) || 1)))}
+                  onChange={setSheetLots}
+                  aria-label="Lots"
                   className="w-14 h-10 text-center font-mono rounded border border-gray-200 dark:border-kite-darkBorder bg-white dark:bg-kite-darkSurface"
                 />
                 <button onClick={() => setSheetLots((l) => l + 1)} className="w-10 h-10 rounded border border-gray-200 dark:border-kite-darkBorder flex items-center justify-center" aria-label="More lots">

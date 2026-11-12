@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { ArrowLeftRight, BarChart2, Bell, Info, LogOut, Plus, Power } from 'lucide-react';
 import { useSimulatorStore } from '../store/useSimulatorStore.ts';
+import { NumberInput } from './NumberInput.tsx';
 import type { Position, ProductType } from '../types/simulator.ts';
 import { formatINR, formatNum, formatPct, maskContractDisplay } from '../utils/format.ts';
 import { ActionSheet, ConfirmDialog, PRODUCT_TIPS, Sheet } from './OrderDetailsSheet.tsx';
@@ -710,13 +711,12 @@ const QtyInput: React.FC<{ p: Row; qty: number; setQty: (n: number) => void; max
         >
           −
         </button>
-        <input
-          inputMode="numeric"
+        <NumberInput
+          integer
+          min={0}
+          max={Math.floor(max / step)}
           value={units}
-          onChange={(e) => {
-            const n = Math.floor(Number(e.target.value.replace(/\D/g, '')) || 0);
-            setQty(Math.min(max, Math.max(0, n * step)));
-          }}
+          onChange={(n) => setQty(Math.min(max, Math.max(0, n * step)))}
           className="flex-1 h-10 text-center font-mono text-sm rounded border border-gray-300 dark:border-kite-darkBorder bg-gray-50 dark:bg-kite-darkBg focus:outline-none focus:border-kite-blue"
         />
         <button

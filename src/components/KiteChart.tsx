@@ -26,6 +26,7 @@ import {
   X,
 } from 'lucide-react';
 import { useSimulatorStore } from '../store/useSimulatorStore.ts';
+import { NumberInput } from './NumberInput.tsx';
 import { api } from '../api/client.ts';
 import type { CandleBar, ChartDrawing, DividendEvent, SplitEvent } from '../types/simulator.ts';
 import {
@@ -869,13 +870,12 @@ export const KiteChart: React.FC = () => {
       {PARAM_FIELDS[key].map((f) => (
         <label key={f.key} className="flex items-center gap-1 text-[11px] text-kite-muted">
           {f.label}
-          <input
-            type="number"
-            inputMode="decimal"
+          <NumberInput
+            min={f.step && f.step < 1 ? f.step : 1}
+            integer={!f.step || f.step >= 1}
             step={f.step || 1}
             value={params[f.key]}
-            onChange={(e) => {
-              const v = Number(e.target.value);
+            onChange={(v) => {
               if (Number.isFinite(v) && v > 0) setParam(f.key, v);
             }}
             className="w-16 h-9 md:h-7 px-1.5 rounded border border-gray-200 dark:border-kite-darkBorder bg-white dark:bg-kite-darkSurface text-gray-800 dark:text-gray-100 font-mono"

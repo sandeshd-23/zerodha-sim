@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ChevronDown, ChevronUp, GripHorizontal, Info, X } from 'lucide-react';
 import { useSimulatorStore } from '../store/useSimulatorStore.ts';
+import { NumberInput } from './NumberInput.tsx';
 import { calculateRequiredMargin, calculateZerodhaCharges } from '../engine/charges.ts';
 import { getAvailableMargin } from '../engine/simulationEngine.ts';
 import { formatINR, formatNum, getDisplaySymbol, maskContractDisplay } from '../utils/format.ts';
@@ -353,13 +354,13 @@ export const OrderWindow: React.FC = () => {
                   </span>
                 )}
               </div>
-              <input
-                type="number"
-                inputMode="numeric"
-                min={t.lotSize}
+              <NumberInput
+                integer
+                min={Math.max(1, t.lotSize)}
                 step={t.lotSize}
                 value={t.qty}
-                onChange={(e) => updateOrderTicket({ qty: Math.max(1, Math.floor(Number(e.target.value) || 0)) })}
+                onChange={(qty) => updateOrderTicket({ qty })}
+                aria-label="Quantity"
                 className={`${inputCls} font-semibold`}
               />
             </div>
@@ -371,13 +372,13 @@ export const OrderWindow: React.FC = () => {
               >
                 Price
               </label>
-              <input
-                type="number"
-                inputMode="decimal"
-                step="0.05"
+              <NumberInput
+                min={0}
+                step={0.05}
                 disabled={!priceEnabled}
                 value={priceEnabled ? t.price : contractLtp}
-                onChange={(e) => updateOrderTicket({ price: Number(e.target.value) })}
+                onChange={(price) => updateOrderTicket({ price })}
+                aria-label="Price"
                 className={inputCls}
               />
             </div>
@@ -393,17 +394,15 @@ export const OrderWindow: React.FC = () => {
               >
                 {t.variety === 'CO' ? 'SL trigger' : 'Trigger price'}
               </label>
-              <input
-                type="number"
-                inputMode="decimal"
-                step="0.05"
+              <NumberInput
+                min={0}
+                step={0.05}
                 disabled={!triggerEnabled}
                 value={t.variety === 'CO' ? t.stopLossTrigger : t.triggerPrice}
-                onChange={(e) =>
-                  t.variety === 'CO'
-                    ? updateOrderTicket({ stopLossTrigger: Number(e.target.value) })
-                    : updateOrderTicket({ triggerPrice: Number(e.target.value) })
+                onChange={(v) =>
+                  t.variety === 'CO' ? updateOrderTicket({ stopLossTrigger: v }) : updateOrderTicket({ triggerPrice: v })
                 }
+                aria-label="Trigger price"
                 className={inputCls}
               />
             </div>
@@ -441,12 +440,12 @@ export const OrderWindow: React.FC = () => {
                 data-tip="Iceberg legs :: How many equal smaller orders your quantity is split into (2–10). Each leg is placed after the previous one fills."
               >
                 <span className="text-[11px] text-kite-muted">Legs</span>
-                <input
-                  type="number"
+                <NumberInput
+                  integer
                   min={2}
                   max={10}
                   value={t.icebergLegs}
-                  onChange={(e) => updateOrderTicket({ icebergLegs: Math.max(2, Math.min(10, Number(e.target.value) || 2)) })}
+                  onChange={(icebergLegs) => updateOrderTicket({ icebergLegs })}
                   className="w-14 px-1.5 h-8 md:h-6 rounded border border-gray-300 dark:border-kite-darkBorder bg-white dark:bg-kite-darkBg font-mono text-center"
                 />
               </label>
@@ -532,13 +531,12 @@ export const OrderWindow: React.FC = () => {
                   ))}
                   {t.validity === 'TTL' && (
                     <label className="flex items-center gap-1.5" data-tip="Minutes :: How long (1–375 min) the order stays open before it is auto-cancelled.">
-                      <input
-                        type="number"
-                        inputMode="numeric"
+                      <NumberInput
+                        integer
                         min={1}
                         max={375}
                         value={t.ttlMinutes}
-                        onChange={(e) => updateOrderTicket({ ttlMinutes: Math.max(1, Math.min(375, Math.floor(Number(e.target.value) || 1))) })}
+                        onChange={(ttlMinutes) => updateOrderTicket({ ttlMinutes })}
                         className="w-16 px-1.5 h-9 md:h-7 rounded border border-gray-300 dark:border-kite-darkBorder bg-white dark:bg-kite-darkBg font-mono text-center"
                       />
                       <span className="text-[11px] text-kite-muted">min</span>
@@ -555,14 +553,14 @@ export const OrderWindow: React.FC = () => {
                       >
                         Disclosed qty
                       </label>
-                      <input
-                        type="number"
-                        inputMode="numeric"
+                      <NumberInput
+                        integer
+                        blankZero
                         min={0}
                         max={t.qty}
-                        value={t.disclosedQty || ''}
+                        value={t.disclosedQty}
                         placeholder="0"
-                        onChange={(e) => updateOrderTicket({ disclosedQty: Math.max(0, Math.floor(Number(e.target.value) || 0)) })}
+                        onChange={(disclosedQty) => updateOrderTicket({ disclosedQty })}
                         className={inputCls}
                       />
                       <div className={`text-[10px] mt-0.5 ${disclosedWarn ? 'text-kite-red' : 'text-kite-muted'}`}>
@@ -641,12 +639,11 @@ export const OrderWindow: React.FC = () => {
                     </label>
                     {leg.on && (
                       <>
-                        <input
-                          type="number"
-                          inputMode="decimal"
-                          step="0.05"
+                        <NumberInput
+                          min={0}
+                          step={0.05}
                           value={leg.price}
-                          onChange={(e) => leg.set(Number(e.target.value))}
+                          onChange={leg.set}
                           className={`${inputCls} mt-1`}
                         />
                         {leg.wrong && (

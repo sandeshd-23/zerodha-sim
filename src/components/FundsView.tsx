@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowDownCircle, ArrowUpCircle, CalendarPlus, RefreshCw, ShieldCheck } from 'lucide-react';
 import { useSimulatorStore } from '../store/useSimulatorStore.ts';
+import { NumberInput } from './NumberInput.tsx';
 import { getAvailableMargin, getCollateralValue, getUsedMargin } from '../engine/simulationEngine.ts';
 import { formatINR } from '../utils/format.ts';
 
@@ -122,12 +123,12 @@ export const FundsView: React.FC = () => {
               ))}
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <input
-                type="number"
+              <NumberInput
+                integer
                 min={1000}
                 step={10000}
                 value={baseCapInput}
-                onChange={(e) => setBaseCapInput(Number(e.target.value))}
+                onChange={setBaseCapInput}
                 className="flex-1 min-w-[140px] h-10 px-3 py-2 rounded border border-gray-300 dark:border-kite-darkBorder bg-white dark:bg-kite-darkSurface font-mono text-sm"
               />
               <button
@@ -145,12 +146,12 @@ export const FundsView: React.FC = () => {
               Instant Virtual UPI Pay-In / Bank Withdrawal
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <input
-                type="number"
-                min={1000}
+              <NumberInput
+                integer
+                min={1}
                 step={5000}
                 value={payinAmt}
-                onChange={(e) => setPayinAmt(Number(e.target.value))}
+                onChange={setPayinAmt}
                 className="flex-1 min-w-[140px] h-10 px-3 py-2 rounded border border-gray-300 dark:border-kite-darkBorder bg-white dark:bg-kite-darkSurface font-mono text-sm"
               />
               <button
@@ -178,12 +179,12 @@ export const FundsView: React.FC = () => {
               Simulate adding fresh savings from your monthly salary on the 1st trading day of every simulated month (set ₹0 to trade strictly on your fixed lump sum).
             </p>
             <div className="flex flex-wrap items-center gap-2">
-              <input
-                type="number"
+              <NumberInput
+                integer
                 min={0}
                 step={5000}
                 value={monthlyTopUpInput}
-                onChange={(e) => setMonthlyTopUpInput(Math.max(0, Number(e.target.value)))}
+                onChange={setMonthlyTopUpInput}
                 className="flex-1 min-w-[140px] h-10 px-3 py-2 rounded border border-gray-300 dark:border-kite-darkBorder bg-white dark:bg-kite-darkSurface font-mono text-sm"
               />
               <button

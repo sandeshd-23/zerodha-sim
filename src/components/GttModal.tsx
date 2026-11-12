@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Target, X } from 'lucide-react';
 import { useSimulatorStore } from '../store/useSimulatorStore.ts';
+import { NumberInput } from './NumberInput.tsx';
 import { formatNum, getDisplaySymbol } from '../utils/format.ts';
 import type { GttLeg, OrderSide } from '../types/simulator.ts';
 
@@ -348,12 +349,11 @@ export const GttModal: React.FC = () => {
                       >
                         Trigger price
                       </label>
-                      <input
-                        type="number"
-                        inputMode="decimal"
-                        step="0.05"
+                      <NumberInput
+                        min={0}
+                        step={0.05}
                         value={l.trigger}
-                        onChange={(e) => updateLeg(k, { trigger: Number(e.target.value) })}
+                        onChange={(trigger) => updateLeg(k, { trigger })}
                         className={inputCls}
                       />
                     </div>
@@ -364,12 +364,11 @@ export const GttModal: React.FC = () => {
                       >
                         Limit price
                       </label>
-                      <input
-                        type="number"
-                        inputMode="decimal"
-                        step="0.05"
+                      <NumberInput
+                        min={0}
+                        step={0.05}
                         value={l.limit}
-                        onChange={(e) => updateLeg(k, { limit: Number(e.target.value), limitTouched: true })}
+                        onChange={(limit) => updateLeg(k, { limit, limitTouched: true })}
                         className={inputCls}
                       />
                     </div>
@@ -386,12 +385,11 @@ export const GttModal: React.FC = () => {
                     >
                       Qty{heldQty > 0 && side === 'SELL' ? ` (held ${heldQty})` : ''}
                     </label>
-                    <input
-                      type="number"
-                      inputMode="numeric"
+                    <NumberInput
+                      integer
                       min={1}
                       value={l.qty}
-                      onChange={(e) => updateLeg(k, { qty: Math.max(1, Math.floor(Number(e.target.value) || 1)) })}
+                      onChange={(qty) => updateLeg(k, { qty })}
                       className={`${inputCls} font-semibold`}
                     />
                   </div>

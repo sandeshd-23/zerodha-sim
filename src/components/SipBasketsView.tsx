@@ -9,6 +9,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import { useSimulatorStore } from '../store/useSimulatorStore.ts';
+import { NumberInput } from './NumberInput.tsx';
 import type { BasketItem, SipAllocation } from '../types/simulator.ts';
 import { calculateRequiredMargin, calculateZerodhaCharges } from '../engine/charges.ts';
 import { formatINR, getDisplaySymbol } from '../utils/format.ts';
@@ -205,13 +206,13 @@ export const SipBasketsView: React.FC = () => {
                 </div>
                 <div className="w-full sm:w-32">
                   <label htmlFor="sip-amt" className="block text-[11px] font-medium mb-1" data-tip="Instalment Amount :: Rupees invested in this stock every instalment. The simulator buys as many whole shares as this amount allows (CNC delivery). :: If one share costs more than the amount, nothing is bought that time.">Amount (₹)</label>
-                  <input
+                  <NumberInput
                     id="sip-amt"
-                    type="number"
-                    min={500}
+                    integer
+                    min={1}
                     step={500}
                     value={newAllocAmt}
-                    onChange={(e) => setNewAllocAmt(Number(e.target.value))}
+                    onChange={setNewAllocAmt}
                     className="w-full h-10 md:h-auto px-2.5 py-1.5 rounded border border-gray-300 dark:border-kite-darkBorder bg-white dark:bg-kite-darkSurface font-mono"
                   />
                 </div>
@@ -416,12 +417,12 @@ export const SipBasketsView: React.FC = () => {
                 </div>
                 <div>
                   <label htmlFor="bk-qty" className="block text-[11px] font-medium mb-1" data-tip="Quantity :: Number of shares for this order.">Qty</label>
-                  <input
+                  <NumberInput
                     id="bk-qty"
-                    type="number"
+                    integer
                     min={1}
                     value={bQty}
-                    onChange={(e) => setBQty(Number(e.target.value))}
+                    onChange={setBQty}
                     className="w-full h-10 md:h-auto px-2 py-1.5 rounded border border-gray-300 dark:border-kite-darkBorder bg-white dark:bg-kite-darkSurface font-mono"
                   />
                 </div>
