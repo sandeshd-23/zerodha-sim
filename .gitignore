@@ -1,0 +1,12 @@
+node_modules/
+dist/
+dev-dist/
+# Market database (rebuilt by `npm run sync` / the GitHub Action)
+data/
+# Generated offline data (rebuilt by `npm run export:data`)
+public/data/
+graphify-out/
+profiles-backup.json
+*.log
+.DS_Store
+tsconfig.tsbuildinfo

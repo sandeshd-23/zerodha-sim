@@ -1,0 +1,13 @@
+# Add your own instruments here, one per line. They are downloaded from Yahoo Finance on the next
+# data update (weekly GitHub Action, or `npm run export:data -- --sync` on your PC).
+#
+# symbol      = how it appears in the app (NSE symbol)
+# yahooTicker = optional, defaults to SYMBOL.NS  (use .BO for BSE-only stocks, ^XYZ for indices)
+# name, sector, lotSize = optional
+#
+symbol,yahooTicker,name,sector,lotSize
+MIDCAPETF,MIDCAPETF.NS,Mirae Asset Nifty Midcap 150 ETF,ETF,1
+SILVERBEES,SILVERBEES.NS,Nippon India Silver ETF,ETF,1
+CPSEETF,CPSEETF.NS,CPSE ETF,ETF,1
+PSUBNKBEES,PSUBNKBEES.NS,Nippon India ETF Nifty PSU Bank BeES,ETF,1
+NIFTY FIN SERVICE,NIFTY_FIN_SERVICE.NS,Nifty Financial Services Index,Indices,1

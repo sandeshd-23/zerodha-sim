@@ -1,0 +1,93 @@
+name: Build & publish offline app
+
+on:
+  # Weekly price refresh: Saturday 13:30 UTC (19:00 IST), after the Friday close.
+  schedule:
+    - cron: '30 13 * * 6'
+  workflow_dispatch:
+    inputs:
+      full_resync:
+        description: 'Re-download all prices from Yahoo (ignore cached database)'
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Restore market database
+        if: ${{ !inputs.full_resync }}
+        uses: actions/cache/restore@v4
+        with:
+          path: data
+          key: simdb-${{ github.run_id }}
+          restore-keys: simdb-
+
+      - name: Download prices & export offline data
+        run: |
+          if [ "${{ github.event_name }}" != "push" ] || [ ! -f data/simulator.db ]; then
+            npm run export:data -- --sync --concurrency 4
+          else
+            npm run export:data
+          fi
+
+      - name: Save market database
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data
+          key: simdb-${{ github.run_id }}
+
+      - name: Sync report
+        if: always()
+        run: |
+          if [ -f public/data/sync-report.json ]; then
+            { echo '### Market data'; echo '```json'; cat public/data/sync-report.json; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Build app
+        run: npm run build
+        env:
+          VITE_BASE: /${{ github.event.repository.name }}/
+
+      - name: Pages extras
+        run: |
+          cp dist/index.html dist/404.html
+          touch dist/.nojekyll
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
